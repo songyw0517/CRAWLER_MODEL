@@ -28,7 +28,7 @@ class crawler:
         self.url = url # init crawler url
         self.domain = self.url.split('/')[0] + '//' + self.url.split('/')[2] # init crawler domain
         self.driver = requests.get(self.url, verify = False, headers = self.header)
-        self.html = self.driver.content.decode('euc-kr', 'replace') # encoding to korean
+        self.html = self.driver.content.decode('utf-8', 'replace') # encoding to korean
         # 한글 깨짐 방지, https://blog.naver.com/PostView.nhn?blogId=redtaeung&logNo=221904432971    
         # utf-8이 아닌 euc-kr 변경시 작동 되었다.
         self.page = BeautifulSoup(self.html, 'html.parser')
@@ -51,6 +51,11 @@ class crawler:
     def select(self, path):
         return self.page.select(path)
     
+class blog_crawler(crawler):
+    def __init__(self, url):
+        super().__init__(url)
+    def getText(self):
+        return self.page.select('#div_\$\{article\.articleNo\} .tt_article_useless_p_margin p')[1].text
 
 class danawa_pc_crawler(crawler):
     def __init__(self, url):
